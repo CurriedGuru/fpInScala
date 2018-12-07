@@ -55,11 +55,10 @@ object List {
     case Cons(h, t) => Cons(h, init(t))
   }
 
-  def foldRight[A, B](as: List[A], z: B)(f: (A, B) => B): B = 
-    as match {
+  def foldRight[A, B](as: List[A], z: B)(f: (A, B) => B): B = as match {
       case Nil => z
       case Cons(x, xs) =>  f(x, foldRight(xs, z)(f))
-    }
+  }
 
   def sum0(as: List[Int]): Int = {
     foldRight(as, 0)((x, y) => x + y)
@@ -68,4 +67,43 @@ object List {
   def product0(as: List[Double]): Double = {
     foldRight(as, 1.0)(_ * _)
   }
+
+  //Exercise 3.9: Compute the length of a list using foldRight
+  def length[A](as: List[A]): Int = {
+    foldRight(as, 0)((x, y) => 1 + y)  //y is the accumulator variable
+  }
+
+  //Exercise 3.10: Write a tail-recursive version of foldRight, called foldLeft
+  def foldLeft[A, B](as: List[A], z: B)(f: (B, A) => B): B = {
+    @annotation.tailrec // This annotation will help us assert that the said function is indeed tail recursive!
+    def accumulate[A, B](as: List[A], accumulator: B)(f: (B, A) => B): B = as match {
+      case Nil => accumulator
+      case Cons(x, xs) => accumulate(xs, f(accumulator, x))(f)
+    }
+
+    accumulate(as, z)(f)
+  }
+
+  // Exercise 3.11
+  def sum1(as: List[Int]): Int = {
+    foldLeft(as, 0)(_ + _)
+  }
+
+  // Exercise 3.11
+  def product1(as: List[Double]): Double = {
+    foldLeft(as, 1.0)(_ * _)
+  }
+
+  // Exercise 3.11
+  def length1[A](as: List[A]): Int = {
+    foldLeft(as, 1)((x, _) => x + 1)
+  }
+
+  // Exercise 3.13: Implementing foldLeft in terms of foldRight
+  def foldLeft1[A, B](as: List[A], z: B)(f: (B, A) => B): B = foldRight(as, z)((x, y) => f(y, x))
+
+  // Exercise 3.13: Implementing foldRight in terms of foldLeft
+  def foldRight1[A, B](as: List[A], z: B)(f: (A, B) => B): B = foldLeft(as, z)((x, y) => f(y, x))
 }
+
+println(List.sum1(List.apply(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)))
