@@ -119,4 +119,11 @@ object List {
   def append1[A](a1: List[A], a2: List[A]) = {
       foldLeft(a2, a1)((x, y) => appendToEnd(x, y))
   }
+
+  // Exercise 3.15: Write a function to concatenate a list of lists into a list
+  def concatenate[A](lists: List[List[A]]): List[A] = lists match {
+      case Nil => Nil
+      case Cons(list, Nil) => list
+      case Cons(list, lists) => append(list, concatenate(lists))
+  }
 }
