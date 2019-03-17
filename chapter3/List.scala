@@ -104,6 +104,19 @@ object List {
 
   // Exercise 3.13: Implementing foldRight in terms of foldLeft
   def foldRight1[A, B](as: List[A], z: B)(f: (A, B) => B): B = foldLeft(as, z)((x, y) => f(y, x))
-}
 
-println(List.sum1(List.apply(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)))
+  // Exercise 3.14: Implement append in terms of foldRight
+  def append0[A](a1: List[A], a2: List[A]) = {
+      foldRight(a1, a2)((x, y) => Cons(x, y))
+  }
+
+  def appendToEnd[A](a: List[A], a0: A): List[A] = a match {
+      case Nil => List.apply(a0)
+      case Cons(x, xs) => Cons(x, appendToEnd(xs, a0))
+  }
+      
+  // Exercie 3.14: Implement append in terms of foldLeft
+  def append1[A](a1: List[A], a2: List[A]) = {
+      foldLeft(a2, a1)((x, y) => appendToEnd(x, y))
+  }
+}
