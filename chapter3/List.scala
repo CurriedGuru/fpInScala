@@ -168,4 +168,24 @@ object List {
         case Cons(a2, a2s) => Cons(f(a1, a2), zipWith(a1s, a2s, padding)(f))
     }
   }
+
+  // Exercise 3.24: Implement hasSubsequence
+  def isPrefix[A](sup: List[A], sub: List[A]): Boolean = {
+    if (List.length(sub) > List.length(sup)) false
+    sup match {
+      case Nil => sub match {
+        case Nil => true
+        case Cons(_, _) => false
+      }
+      case Cons(supHead, supTail) => sub match {
+        case Nil => true
+        case Cons(subHead, subTail) => supHead == subHead && isPrefix(supTail, subTail)
+      }
+    }
+  }
+
+  def hasSubsequence[A](sup: List[A], sub: List[A]): Boolean = sup match {
+    case Nil => false
+    case Cons(_, tail) => isPrefix(sup, sub) || hasSubsequence(tail, sub)
+  }
 }
