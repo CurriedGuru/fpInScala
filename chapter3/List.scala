@@ -126,4 +126,46 @@ object List {
       case Cons(list, Nil) => list
       case Cons(list, lists) => append(list, concatenate(lists))
   }
+
+  // Exercise 3.18: Write a function map that generalizes modifying each element of a list while maintaining the structure of the list
+  def map[A, B](as: List[A])(f: A => B): List[B] = as match {
+    case Nil => Nil
+    case Cons(x, xs) => Cons(f(x), map(xs)(f))
+  }
+
+  // Exercise 3.16: Write a function that transforms a list of integers by adding 1 to each element
+  def addOne(ints: List[Int]): List[Int] = List.map(ints)(x => x + 1)
+
+  // Exercise 3.17: Write a function that turns each value in a List[Double] into a String
+  def toString(doubles: List[Double]): List[String] = List.map(doubles)(d => d.toString)
+
+  // Exercise 3.19: Write a function filter that removes elements from a list unless they satisfy a given predicate. Use it to remove all odd
+  // numbers from a List[Int]
+  def filter[A](as: List[A])(f: A => Boolean): List[A] = as match {
+    case Nil => Nil
+    case Cons(x, xs) => if (f(x)) Cons(x, filter(xs)(f)) else filter(xs)(f)
+  }
+
+  def removeOddNumbers(ints: List[Int]): List[Int] = List.filter(ints)(int => int % 2 == 0)
+
+  // Exercise 3.20: Write a function flatMap that returns a list instead of a single result, and that list should be inserted into the final list.
+  def flatMap[A, B](as: List[A])(f: A => List[B]): List[B] = as match {
+    case Nil => Nil
+    case Cons(x, xs) => List.append0(f(x), flatMap(xs)(f))
+  }
+
+  // Exercise 3.21: Use flatMap to implement filter
+  def filter0[A](as: List[A])(f: A => Boolean) = flatMap(as)(x => if (f(x)) List.apply(x) else List.apply())
+
+  // Exerise 3.23: Implement zipWith for lists of arbitrary lengths
+  def zipWith[A](a1: List[A], a2: List[A], padding: A)(f: (A, A) => A): List[A] = a1 match {
+    case Nil => a2 match {
+        case Nil => Nil
+        case Cons(a2, a2s) => Cons(f(padding, a2), zipWith(Nil, a2s, padding)(f))
+    }
+    case Cons(a1, a1s) => a2 match {
+        case Nil => Cons(f(a1, padding), zipWith(a1s, Nil, padding)(f))
+        case Cons(a2, a2s) => Cons(f(a1, a2), zipWith(a1s, a2s, padding)(f))
+    }
+  }
 }
